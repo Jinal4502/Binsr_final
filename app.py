@@ -12,7 +12,7 @@ SRC_DIR = CHALLENGE_DIR / "src"
 BONUS_DIR = BASE_DIR / "bonus"
 
 INPUT_JSON = SRC_DIR / "inspection.json"
-OUTPUT_TREC_PDF = CHALLENGE_DIR / "output" / "combined_report.pdf"
+OUTPUT_TREC_PDF = CHALLENGE_DIR / "output" / "trec_report.pdf"
 OUTPUT_BINSR_PDF = BONUS_DIR / "inspection_report_html.pdf"
 BINSR_SCRIPT = BONUS_DIR / "inspection_report_html.py"
 
