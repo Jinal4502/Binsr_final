@@ -28,11 +28,11 @@ Binsr_final/
 │   │   ├── generate_first_page.ts
 │   │   └── generate_other_pages.ts
 │   └── output/
-│       └── combined_report.pdf       # ✅ Final TREC PDF output
+│       └── trec_report.pdf       # ✅ Final TREC PDF output
 │
 └── bonus/                        # Binsr Custom Report generator (Python)
     ├── inspection_report_html.py     # HTML → PDF generator
-    ├── inspection_report_html.pdf    # ✅ Final Binsr PDF output
+    ├── binsr_customized_inspection_report.pdf    # ✅ Final Binsr PDF output
     └── templates/
         └── report_template.html      # Jinja2 template for layout/styling
 ````

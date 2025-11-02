@@ -18,7 +18,7 @@ from weasyprint import HTML, CSS
 
 INPUT_JSON = "../binsr-challenge/src/inspection.json"
 # INPUT_JSON = "https://github.com/ayadav42/binsr-challenge/blob/main/src/inspection.json"
-OUTPUT_PDF = "./inspection_report_html.pdf"
+OUTPUT_PDF = "./binsr_customized_inspection_report.pdf"
 TEMPLATE_DIR = Path("./templates")
 TEMPLATE_FILE = "report_template.html"
 # TEMPLATE_FILE = "https://github.com/ayadav42/binsr-challenge/blob/main/src/bonus/templates/report_template.html"
