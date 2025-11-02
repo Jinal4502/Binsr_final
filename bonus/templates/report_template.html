@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inspection Report</title>
+<style>
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    color: #222;
+    margin: 0.7in;
+    background-color: #fff;
+  }
+
+  header, footer {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+  }
+  header {
+    position: running(header);
+    border-bottom: 2px solid #0B3D91;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    font-weight: bold;
+  }
+  footer {
+    position: running(footer);
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
+    padding-top: 6px;
+  }
+  @page {
+    size: letter;
+    margin: 0.6in;
+    @top-center { content: element(header); }
+    @bottom-center { content: element(footer); }
+  }
+
+  h1.cover {
+    text-align: center;
+    color: #0B3D91;
+    font-size: 26px;
+    margin-bottom: 5px;
+  }
+
+  .address { text-align: center; color: #444; font-size: 12px; }
+  .small-muted { text-align: center; color: #777; font-size: 11px; margin-bottom: 12px; }
+
+  .divider {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, #0B3D91, #ffffff);
+    margin: 16px 0;
+  }
+
+  h2.section {
+    color: #0B3D91;
+    background: #F5F7FB;
+    padding: 6px 8px;
+    border-left: 4px solid #0B3D91;
+    font-size: 16px;
+    margin-top: 25px;
+  }
+
+  h3 { font-size: 13px; color: #222; margin-top: 12px; }
+
+  /* Legend */
+  .legend-bar {
+    width: 100%;
+    height: 18px;
+    background: linear-gradient(to right, #8BC34A, #FFB74D, #BDBDBD, #EF5350);
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+  .legend {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; font-size: 12px;
+  }
+  .legend span {
+    font-weight: bold; padding: 3px 8px; color: #fff; border-radius: 3px;
+  }
+  .I  { background: #8BC34A; }
+  .NI { background: #FFB74D; }
+  .NP { background: #BDBDBD; }
+  .D  { background: #EF5350; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th, td { border: 1px solid #ddd; padding: 6px 8px; font-size: 12px; vertical-align: top; }
+  th { background: #f5f7fb; text-align: left; font-weight: bold; color: #0B3D91; }
+  tr:nth-child(even) { background: #fafafa; }
+
+  /* Comment blocks */
+  .comment-block {
+    margin-top: 10px; display: flex; gap: 12px; align-items: flex-start;
+    border: 1px solid #ddd; border-radius: 6px; padding: 6px; background: #fafafa;
+  }
+  .comment-block img {
+    width: 220px; height: 160px; object-fit: cover;
+    border: 1px solid #ccc; border-radius: 4px;
+  }
+  .comment-text { flex: 1; }
+  .comment-text b { color: #0B3D91; }
+
+  /* Colored status label */
+  .status {
+    display: inline-block; padding: 3px 10px; color: #fff;
+    font-weight: bold; font-size: 12px; border-radius: 4px; margin-left: 4px;
+  }
+  .status-I  { background-color: #8BC34A; }
+  .status-NI { background-color: #FFB74D; }
+  .status-NP { background-color: #BDBDBD; }
+  .status-D  { background-color: #EF5350; }
+
+  footer::after {
+    content: "Property Inspection Report — Page " counter(page) " of " counter(pages);
+  }
+</style>
+</head>
+
+<body>
+
+<header>Property Inspection Report</header>
+
+<!-- COVER -->
+<h1 class="cover">PROPERTY INSPECTION REPORT</h1>
+<p class="address">{{ address.fullAddress or address.street ~ ', ' ~ address.city }}</p>
+
+{% if inspection.headerImageUrl %}
+<div style="text-align:center;margin:10px 0;">
+  <img src="{{ inspection.headerImageUrl }}" style="max-width:90%;max-height:300px;border:1px solid #ccc;border-radius:4px;">
+</div>
+{% endif %}
+
+<p class="small-muted">Inspection Date: {{ date }}</p>
+<div class="divider"></div>
+
+<!-- BASIC INFO -->
+<h2>Client Information</h2>
+<ul>
+  {% for key, val in client.items() if val %}
+  <li><b>{{ key|title }}:</b> {{ val }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Inspector Information</h2>
+<ul>
+  {% for key, val in inspector.items() if val %}
+  <li><b>{{ key|title }}:</b> {{ val }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Property Details</h2>
+<ul>
+  {% for key, val in address.items() if val %}
+  <li><b>{{ key|title }}:</b> {{ val }}</li>
+  {% endfor %}
+</ul>
+
+<!-- PAYMENT BREAKDOWN -->
+<h2>Payment Breakdown</h2>
+{% set breakdown = inspection.get("bookingFormData", {}).get("breakdown", inspection.get("breakdown", [])) %}
+{% if breakdown and breakdown|length > 0 %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Source</th>
+      <th>Hours</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in breakdown %}
+    <tr>
+      <td>{{ b.name }}</td>
+      <td>{{ b.source }}</td>
+      <td>{{ b.hours }}</td>
+      <td>${{ b.price }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="small-muted"><i>No payment breakdown available.</i></p>
+{% endif %}
+
+<div class="divider"></div>
+
+<!-- SECTIONS -->
+{% for sec in sections %}
+<h2 class="section">{{ sec.sectionNumber }}. {{ sec.name }}</h2>
+<div class="legend-bar"></div>
+<div class="legend">
+  <span class="I">Inspected</span>
+  <span class="NI">Not Inspected</span>
+  <span class="NP">Not Present</span>
+  <span class="D">Deficient</span>
+</div>
+
+{% for li in sec.lineItems %}
+  <h3>{{ li.title or li.name }}</h3>
+  <p>
+    <b>Status:</b>
+    {% if li.inspectionStatus %}
+      <span class="status status-{{ li.inspectionStatus }}">{{ li.inspectionStatus }}</span>
+    {% else %}
+      <span class="status status-NP">N/A</span>
+    {% endif %}
+  </p>
+
+  {% for c in li.comments %}
+  <div class="comment-block">
+    {% if c.photos and c.photos[0].url %}
+      <img src="{{ c.photos[0].url }}" alt="">
+    {% endif %}
+    <div class="comment-text">
+      {% if c.label %}<b>{{ c.label }}</b><br>{% endif %}
+      {% if c.location %}<b>Location:</b> {{ c.location }}<br>{% endif %}
+      <p>{{ c.commentText or c.text }}</p>
+    </div>
+  </div>
+  {% endfor %}
+{% endfor %}
+<div class="divider"></div>
+{% endfor %}
+
+<footer></footer>
+</body>
+</html>

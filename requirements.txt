@@ -1,0 +1,16 @@
+# --- Streamlit + Binsr report environment ---
+streamlit>=1.39.0
+
+# Core dependencies
+weasyprint>=61.2
+jinja2>=3.1.3
+
+# HTML/PDF rendering stack (WeasyPrint dependencies)
+cairocffi>=1.7.0
+cffi>=1.16.0
+tinycss2>=1.3.0
+cssselect2>=0.7.0
+pillow>=10.0.0
+
+# For URL and date handling (safeguard future changes)
+requests>=2.32.0
