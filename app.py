@@ -8,7 +8,7 @@ import sys
 
 # ---------- PATH SETUP ----------
 BASE_DIR = Path(__file__).resolve().parent
-CHALLENGE_DIR = BASE_DIR / "binsr-challenge"
+CHALLENGE_DIR = BASE_DIR / "binsr_challenge"
 SRC_DIR = CHALLENGE_DIR / "src"
 BONUS_DIR = BASE_DIR / "bonus"
 
