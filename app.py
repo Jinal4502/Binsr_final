@@ -4,6 +4,7 @@ import subprocess
 import streamlit as st
 from pathlib import Path
 import time
+import sys
 
 # ---------- PATH SETUP ----------
 BASE_DIR = Path(__file__).resolve().parent
@@ -66,8 +67,13 @@ if st.button("🚀 Generate Selected Reports", key="generate_button"):
         try:
             # --- Binsr HTML/PDF ---
             if gen_binsr:
+                # subprocess.run(
+                #     ["python", str(BINSR_SCRIPT)],
+                #     check=True,
+                #     cwd=BONUS_DIR
+                # )
                 subprocess.run(
-                    ["python", str(BINSR_SCRIPT)],
+                    [sys.executable, str(BINSR_SCRIPT)],
                     check=True,
                     cwd=BONUS_DIR
                 )
