@@ -24,6 +24,10 @@ st.markdown("""
 Upload your `inspection.json` (optional), then generate one or both reports below.
 """)
 
+# ---------- SESSION STATE ----------
+if "generated_reports" not in st.session_state:
+    st.session_state.generated_reports = []
+
 # ---------- FILE UPLOAD ----------
 uploaded_file = st.file_uploader("📤 Upload inspection.json (optional)", type=["json"])
 
@@ -37,15 +41,27 @@ if uploaded_file:
 st.subheader("Select what you want to generate:")
 col1, col2 = st.columns(2)
 with col1:
-    gen_trec = st.checkbox("🧱 Generate TREC Report (TypeScript)")
+    gen_trec = st.checkbox(
+        "🧱 Generate TREC Report (TypeScript)",
+        value=st.session_state.get("gen_trec", False),
+        key="checkbox_trec"
+    )
 with col2:
-    gen_binsr = st.checkbox("🧾 Generate Binsr Customized Report (HTML/PDF)", value=True)
+    gen_binsr = st.checkbox(
+        "🧾 Generate Binsr Customized Report (HTML/PDF)",
+        value=st.session_state.get("gen_binsr", True),
+        key="checkbox_binsr"
+    )
+
+# Remember checkbox selections
+st.session_state.gen_trec = gen_trec
+st.session_state.gen_binsr = gen_binsr
 
 # ---------- GENERATE BUTTON ----------
-if st.button("🚀 Generate Selected Reports"):
+if st.button("🚀 Generate Selected Reports", key="generate_button"):
     with st.spinner("Generating... please wait ⏳"):
         start = time.time()
-        generated = []
+        st.session_state.generated_reports.clear()  # reset list
 
         try:
             # --- Binsr HTML/PDF ---
@@ -53,34 +69,36 @@ if st.button("🚀 Generate Selected Reports"):
                 subprocess.run(
                     ["python", str(BINSR_SCRIPT)],
                     check=True,
-                    cwd=BONUS_DIR   # run inside the bonus folder without changing Streamlit’s CWD
+                    cwd=BONUS_DIR
                 )
                 if OUTPUT_BINSR_PDF.exists():
-                    generated.append(("Binsr Customized Report", OUTPUT_BINSR_PDF))
+                    st.session_state.generated_reports.append(("Binsr Customized Report", OUTPUT_BINSR_PDF))
 
             # --- TREC TypeScript ---
             if gen_trec:
                 subprocess.run(["pnpm", "i"], check=True, cwd=CHALLENGE_DIR)
                 subprocess.run(["npx", "ts-node", "src/generate_report.ts"], check=True, cwd=CHALLENGE_DIR)
                 if OUTPUT_TREC_PDF.exists():
-                    generated.append(("TREC Report", OUTPUT_TREC_PDF))
+                    st.session_state.generated_reports.append(("TREC Report", OUTPUT_TREC_PDF))
 
-            # --- Show downloads ---
             elapsed = time.time() - start
-            if generated:
-                st.success(f"✅ {len(generated)} report(s) generated in {elapsed:.2f} seconds.")
-                for label, pdf_path in generated:
-                    with open(pdf_path, "rb") as f:
-                        st.download_button(
-                            label=f"⬇️ Download {label}",
-                            data=f,
-                            file_name=pdf_path.name,
-                            mime="application/pdf",
-                        )
-            else:
-                st.error("⚠️ No PDFs generated.")
+            st.success(f"✅ {len(st.session_state.generated_reports)} report(s) generated in {elapsed:.2f} seconds.")
 
         except subprocess.CalledProcessError as e:
             st.error(f"❌ Command failed: {e}")
         except Exception as ex:
             st.error(f"❌ Unexpected error: {ex}")
+
+# ---------- DOWNLOAD SECTION ----------
+if st.session_state.generated_reports:
+    st.markdown("### ⬇️ Download your reports")
+    for label, pdf_path in st.session_state.generated_reports:
+        if pdf_path.exists():
+            with open(pdf_path, "rb") as f:
+                st.download_button(
+                    label=f"Download {label}",
+                    data=f,
+                    file_name=pdf_path.name,
+                    mime="application/pdf",
+                    key=f"download_{label}"  # unique key per button
+                )
