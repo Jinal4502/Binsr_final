@@ -182,9 +182,9 @@ subprocess.run([...], check=True, cwd=CHALLENGE_DIR)
 
 | Report                | Avg Time | Description                         |
 | --------------------- | -------- | ----------------------------------- |
-| **Binsr (Python)**    | ~10–12 s | Full HTML → PDF via WeasyPrint      |
+| **Binsr (Python)**    | ~12-13 s | Full HTML → PDF via WeasyPrint      |
 | **TREC (TypeScript)** | ~7–8 s   | Node pipeline with headless browser |
-| **Default (Both)**    | ~18–20 s | Sequential combined run             |
+| **Default (Both)**    | ~20-22 s | Sequential combined run             |
 
 ---
 
